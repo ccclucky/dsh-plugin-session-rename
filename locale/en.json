@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Session Rename",
+    "description": "Registers the session_rename agent tool, which renames the current session through the sessionTitle service."
+  }
+}

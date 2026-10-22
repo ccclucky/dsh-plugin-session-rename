@@ -1,0 +1,17 @@
+# Logs and temp files
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Dependencies (this package has none at runtime, but keep it future-proof)
+node_modules/
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local scratch
+*.local.*
+tmp/

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "会话改名工具",
+    "description": "注册 session_rename 工具，经 sessionTitle 服务实时改写当前会话标题。"
+  }
+}

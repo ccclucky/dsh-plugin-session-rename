@@ -1,0 +1,53 @@
+{
+  "name": "dsh-plugin-session-rename",
+  "version": "1.0.0",
+  "description": "DSH plugin that gives the agent a native session_rename tool backed by the sessionTitle service.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "cordis-plugin",
+    "plugin",
+    "session",
+    "title",
+    "rename",
+    "agent-tool"
+  ],
+  "license": "MIT",
+  "author": "CCLUCKY",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccclucky/dsh-plugin-session-rename.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ccclucky/dsh-plugin-session-rename/issues"
+  },
+  "homepage": "https://github.com/ccclucky/dsh-plugin-session-rename#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

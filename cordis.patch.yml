@@ -1,0 +1,8 @@
+# dsh-plugin-session-rename bundle patch
+#
+# One insert row: the plugin registers the `session_rename` agent tool. The row
+# id is stable so a profile's own cordis.patch.yml (or an agent preset) can
+# override it by id without restating the module name.
+- insert:
+    - id: session-rename
+      name: 'dsh-plugin-session-rename'
