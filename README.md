@@ -37,21 +37,15 @@ With this plugin the Agent can keep the title honest on its own, at the moment t
 
 ## Install
 
-> **Not on npm yet.** This package is distributed from GitHub only. There is no
-> `npm install` and no `dsh plugin add dsh-plugin-session-rename` — that form
-> works only for a name the npm registry can resolve.
-
-### Option A — install straight from GitHub (recommended)
-
-The `dsh plugin` command is a thin forwarder to `pnpm add`, so a git spec works:
+### From npm (one command)
 
 ```bash
-dsh plugin --profile <profile> add git+https://github.com/ccclucky/dsh-plugin-session-rename.git
+dsh plugin --profile <profile> add dsh-plugin-session-rename
 ```
 
-Verified: pnpm records `github:ccclucky/dsh-plugin-session-rename`, and because
-the package declares `dsh.bundle.patch`, the installer appends it to
-`dsh.profile.bundles` — the row mounts itself, no patch editing:
+This is the form the in-app Plugin Hub and the community index rely on. The
+package declares `dsh.bundle.patch`, so the installer appends it to
+`dsh.profile.bundles` and the row mounts itself:
 
 ```yaml
 - insert:
@@ -60,9 +54,19 @@ the package declares `dsh.bundle.patch`, the installer appends it to
 ```
 
 Note that a profile named `desktop` is owned by the Electron application and
-cannot be managed from the CLI; use the in-app plugin manager there, or Option B.
+cannot be managed from the CLI; use the in-app plugin manager there, or install
+from source below.
 
-### Option B — local checkout in your profile
+### From source (works before an npm release)
+
+The `dsh plugin` command is a thin forwarder to `pnpm add`, so a git spec works
+too:
+
+```bash
+dsh plugin --profile <profile> add git+https://github.com/ccclucky/dsh-plugin-session-rename.git
+```
+
+### Local checkout in your profile
 
 Clone this repository anywhere, then point the profile patch at the file. The
 Loader anchors relative paths beside the patch file:
@@ -74,8 +78,8 @@ Loader anchors relative paths beside the patch file:
       name: './plugins/session-rename/index.js'
 ```
 
-Use **one** channel only: both at once produces a duplicate entry id
-`session-rename`.
+Use **one** channel only: npm, git and a local row at once produce a duplicate
+entry id `session-rename`.
 
 HMR picks up both the module and the patch layer live; no restart is needed.
 
@@ -121,20 +125,32 @@ node --test
 
 ## Compatibility
 
-Written against the DSH 0.2.x plugin API (`ctx.tools.register`, `ctx.effect`, `sessionTitle.rename`). Because the plugin has no peer dependencies, it does not trigger version-compatibility refusals; if a future API change lands, the row reports `failed` in `plugin_manager list_plugins` and the tool simply disappears.
+Written against the DSH 0.2.x plugin API (`ctx.tools.register`, `ctx.effect`, `sessionTitle.rename`).
+
+The package declares `engines.dsh: ">=0.2.1-rc.2 <0.3.0"`. DSH checks that range
+before installing and refuses an incompatible runtime instead of loading a plugin
+that may crash — DSH is in developer preview, so a 0.3.x breaking change should
+fail loudly. Because `engines.dsh` is present it decides alone: the package
+deliberately declares **no** `@deepseek-ai/*` peer dependencies, since it imports
+nothing and should not be gated by peer resolution.
+
+If a future runtime matches the code but not the range, grant the documented
+exact-version exemption (`dsh plugin allow-version`) rather than editing the range.
 
 ## Distribution status
 
 | Channel | Available |
 |---|---|
 | GitHub repository | ✅ https://github.com/ccclucky/dsh-plugin-session-rename |
+| GitHub topic `dsh-plugin` | ✅ added — the community hub (dsh-plugin.org) discovers repos by this topic |
 | `dsh plugin add git+https://…` | ✅ verified end to end |
-| npm registry | ❌ **not published** |
-| `dsh plugin add dsh-plugin-session-rename` (bare name) | ❌ fails while the name is absent from npm |
+| npm registry | ⏳ prepared, **first publish pending** |
+| `dsh plugin add dsh-plugin-session-rename` | ❌ fails until the first npm publish lands |
 
-Publishing to npm would make the bare-name install work. That requires an npm
-account and a deliberate `npm publish`; it has not been done, so treat the
-bare-name form as unavailable until this table says otherwise.
+The npm release is prepared and reproducible: `.github/workflows/publish.yml`
+runs the tests, verifies the tarball, and publishes with provenance on a `v*`
+tag push, using the `NPM_TOKEN` repository secret. Until that run succeeds, use
+the git or local channel above.
 
 ## License
 

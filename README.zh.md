@@ -37,19 +37,14 @@ session_rename(title: string)
 
 ## 安装
 
-> **尚未发布到 npm。** 本包只通过 GitHub 分发，没有 `npm install`，也不能用
-> `dsh plugin add dsh-plugin-session-rename` —— 那种写法只对 npm registry 能解析的包名有效。
-
-### 方式 A —— 直接从 GitHub 安装（推荐）
-
-`dsh plugin` 命令本身只是转发给 `pnpm add`，所以 git 源可用：
+### 从 npm 安装（一条命令）
 
 ```bash
-dsh plugin --profile <profile> add git+https://github.com/ccclucky/dsh-plugin-session-rename.git
+dsh plugin --profile <profile> add dsh-plugin-session-rename
 ```
 
-实测通过：pnpm 记录为 `github:ccclucky/dsh-plugin-session-rename`；由于本包声明了
-`dsh.bundle.patch`，安装器会把它追加进 `dsh.profile.bundles`，该行自行挂载，无需手改 patch：
+这是应用内 Plugin Hub 与社区索引所依赖的形式。本包声明了 `dsh.bundle.patch`，安装器会把它
+追加进 `dsh.profile.bundles`，该行自行挂载：
 
 ```yaml
 - insert:
@@ -57,9 +52,18 @@ dsh plugin --profile <profile> add git+https://github.com/ccclucky/dsh-plugin-se
       name: 'dsh-plugin-session-rename'
 ```
 
-注意：名为 `desktop` 的 profile 由 Electron 应用独占，CLI 无法管理；请改用应用内插件管理页，或用方式 B。
+注意：名为 `desktop` 的 profile 由 Electron 应用独占，CLI 无法管理；请改用应用内插件管理页，
+或用下面的源码安装方式。
 
-### 方式 B —— profile 内本地副本
+### 从源码安装（npm 发布前可用）
+
+`dsh plugin` 命令本身只是转发给 `pnpm add`，所以 git 源可用：
+
+```bash
+dsh plugin --profile <profile> add git+https://github.com/ccclucky/dsh-plugin-session-rename.git
+```
+
+### profile 内本地副本
 
 把本仓库 clone 到任意位置，再让 profile 补丁指向文件（Loader 以补丁文件所在目录为基准解析相对路径）：
 
@@ -70,7 +74,7 @@ dsh plugin --profile <profile> add git+https://github.com/ccclucky/dsh-plugin-se
       name: './plugins/session-rename/index.js'
 ```
 
-两种方式**只能二选一**：同时存在会产生重复 entry id `session-rename`。
+**只能选一种**：npm、git、本地行三者同时存在会产生重复 entry id `session-rename`。
 
 模块与补丁层都由 HMR 热加载，无需重启。
 
@@ -116,18 +120,27 @@ node --test
 
 ## 兼容性
 
-基于 DSH 0.2.x 插件 API 编写（`ctx.tools.register`、`ctx.effect`、`sessionTitle.rename`）。由于没有 peer 依赖，不会触发版本兼容拒绝；若未来 API 变更，该行会在 `plugin_manager list_plugins` 中报 `failed`，工具随之消失。
+基于 DSH 0.2.x 插件 API 编写（`ctx.tools.register`、`ctx.effect`、`sessionTitle.rename`）。
+
+本包声明 `engines.dsh: ">=0.2.1-rc.2 <0.3.0"`。DSH 在安装前会校验该范围，不兼容的运行时会被
+直接拒绝，而不是加载一个可能崩的插件——DSH 处于开发者预览期，0.3.x 的破坏性变更应当显式失败。
+由于存在 `engines.dsh`，它单独决定兼容性：本包**刻意不声明**任何 `@deepseek-ai/*` peerDependencies，
+因为它不 import 任何包，不该被 peer 解析卡住。
+
+若未来运行时能跑但不在范围内，请用官方的精确版本豁免（`dsh plugin allow-version`），而不是改范围。
 
 ## 发布状态
 
 | 渠道 | 是否可用 |
 |---|---|
 | GitHub 仓库 | ✅ https://github.com/ccclucky/dsh-plugin-session-rename |
+| GitHub 话题 `dsh-plugin` | ✅ 已添加 —— 社区站 dsh-plugin.org 依此话题发现仓库 |
 | `dsh plugin add git+https://…` | ✅ 已端到端实测 |
-| npm registry | ❌ **未发布** |
-| `dsh plugin add dsh-plugin-session-rename`（裸包名） | ❌ 包名不在 npm 上时必然失败 |
+| npm registry | ⏳ 已备好，**首次发布待执行** |
+| `dsh plugin add dsh-plugin-session-rename` | ❌ 首次 npm 发布完成前不可用 |
 
-发布到 npm 后裸包名才可用。那需要 npm 账号并显式执行 `npm publish`，目前尚未进行；在本表更新之前，裸包名写法一律视为不可用。
+npm 发布已备成可复现流程：`.github/workflows/publish.yml` 在推送 `v*` 标签时跑测试、校验 tarball、
+带 provenance 发布，使用仓库密钥 `NPM_TOKEN`。在该流程成功之前，请用上面的 git 或本地方式。
 
 ## 许可
 

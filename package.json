@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-session-rename",
   "version": "1.0.0",
-  "description": "DSH plugin that gives the agent a native session_rename tool backed by the sessionTitle service.",
+  "description": "DeepSeek Harness plugin: a native session_rename agent tool backed by the Cordis sessionTitle service, so the agent can keep each conversation's title honest.",
   "type": "module",
   "main": "index.js",
   "exports": {
@@ -22,15 +22,19 @@
     "test": "node --test"
   },
   "keywords": [
+    "dsh-plugin",
     "dsh",
     "deepseek-harness",
+    "deepseek",
+    "harness",
     "cordis",
     "cordis-plugin",
     "plugin",
     "session",
-    "title",
+    "session-title",
     "rename",
-    "agent-tool"
+    "agent-tool",
+    "tool"
   ],
   "license": "MIT",
   "author": "CCLUCKY",
@@ -43,7 +47,8 @@
   },
   "homepage": "https://github.com/ccclucky/dsh-plugin-session-rename#readme",
   "engines": {
-    "node": ">=20"
+    "node": ">=20",
+    "dsh": ">=0.2.1-rc.2 <0.3.0"
   },
   "dsh": {
     "bundle": {
