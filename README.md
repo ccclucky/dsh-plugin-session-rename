@@ -37,13 +37,21 @@ With this plugin the Agent can keep the title honest on its own, at the moment t
 
 ## Install
 
-### Option A — as a bundle (recommended)
+> **Not on npm yet.** This package is distributed from GitHub only. There is no
+> `npm install` and no `dsh plugin add dsh-plugin-session-rename` — that form
+> works only for a name the npm registry can resolve.
+
+### Option A — install straight from GitHub (recommended)
+
+The `dsh plugin` command is a thin forwarder to `pnpm add`, so a git spec works:
 
 ```bash
-dsh plugin --profile <profile> add dsh-plugin-session-rename
+dsh plugin --profile <profile> add git+https://github.com/ccclucky/dsh-plugin-session-rename.git
 ```
 
-Or from the Agent / UI, install this repository's directory or package as a bundle. The package declares `dsh.bundle.patch`, so the row mounts itself:
+Verified: pnpm records `github:ccclucky/dsh-plugin-session-rename`, and because
+the package declares `dsh.bundle.patch`, the installer appends it to
+`dsh.profile.bundles` — the row mounts itself, no patch editing:
 
 ```yaml
 - insert:
@@ -51,9 +59,13 @@ Or from the Agent / UI, install this repository's directory or package as a bund
       name: 'dsh-plugin-session-rename'
 ```
 
+Note that a profile named `desktop` is owned by the Electron application and
+cannot be managed from the CLI; use the in-app plugin manager there, or Option B.
+
 ### Option B — local checkout in your profile
 
-Put this package anywhere under the profile and point the profile patch at the file. The Loader anchors relative paths beside the patch file:
+Clone this repository anywhere, then point the profile patch at the file. The
+Loader anchors relative paths beside the patch file:
 
 ```yaml
 # ~/.dsh/profiles/<profile>/cordis.patch.yml
@@ -62,7 +74,8 @@ Put this package anywhere under the profile and point the profile patch at the f
       name: './plugins/session-rename/index.js'
 ```
 
-Use **one** channel only: both at once produces a duplicate entry id `session-rename`.
+Use **one** channel only: both at once produces a duplicate entry id
+`session-rename`.
 
 HMR picks up both the module and the patch layer live; no restart is needed.
 
@@ -109,6 +122,19 @@ node --test
 ## Compatibility
 
 Written against the DSH 0.2.x plugin API (`ctx.tools.register`, `ctx.effect`, `sessionTitle.rename`). Because the plugin has no peer dependencies, it does not trigger version-compatibility refusals; if a future API change lands, the row reports `failed` in `plugin_manager list_plugins` and the tool simply disappears.
+
+## Distribution status
+
+| Channel | Available |
+|---|---|
+| GitHub repository | ✅ https://github.com/ccclucky/dsh-plugin-session-rename |
+| `dsh plugin add git+https://…` | ✅ verified end to end |
+| npm registry | ❌ **not published** |
+| `dsh plugin add dsh-plugin-session-rename` (bare name) | ❌ fails while the name is absent from npm |
+
+Publishing to npm would make the bare-name install work. That requires an npm
+account and a deliberate `npm publish`; it has not been done, so treat the
+bare-name form as unavailable until this table says otherwise.
 
 ## License
 

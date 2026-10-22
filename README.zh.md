@@ -37,13 +37,19 @@ session_rename(title: string)
 
 ## 安装
 
-### 方式 A —— 作为 bundle（推荐）
+> **尚未发布到 npm。** 本包只通过 GitHub 分发，没有 `npm install`，也不能用
+> `dsh plugin add dsh-plugin-session-rename` —— 那种写法只对 npm registry 能解析的包名有效。
+
+### 方式 A —— 直接从 GitHub 安装（推荐）
+
+`dsh plugin` 命令本身只是转发给 `pnpm add`，所以 git 源可用：
 
 ```bash
-dsh plugin --profile <profile> add dsh-plugin-session-rename
+dsh plugin --profile <profile> add git+https://github.com/ccclucky/dsh-plugin-session-rename.git
 ```
 
-也可在 Agent 或插件管理页把本仓库目录/包作为 bundle 安装。本包声明了 `dsh.bundle.patch`，该行会自行挂载：
+实测通过：pnpm 记录为 `github:ccclucky/dsh-plugin-session-rename`；由于本包声明了
+`dsh.bundle.patch`，安装器会把它追加进 `dsh.profile.bundles`，该行自行挂载，无需手改 patch：
 
 ```yaml
 - insert:
@@ -51,9 +57,11 @@ dsh plugin --profile <profile> add dsh-plugin-session-rename
       name: 'dsh-plugin-session-rename'
 ```
 
+注意：名为 `desktop` 的 profile 由 Electron 应用独占，CLI 无法管理；请改用应用内插件管理页，或用方式 B。
+
 ### 方式 B —— profile 内本地副本
 
-把本包放到 profile 下任意位置，再让 profile 补丁指向文件（Loader 以补丁文件所在目录为基准解析相对路径）：
+把本仓库 clone 到任意位置，再让 profile 补丁指向文件（Loader 以补丁文件所在目录为基准解析相对路径）：
 
 ```yaml
 # ~/.dsh/profiles/<profile>/cordis.patch.yml
@@ -109,6 +117,17 @@ node --test
 ## 兼容性
 
 基于 DSH 0.2.x 插件 API 编写（`ctx.tools.register`、`ctx.effect`、`sessionTitle.rename`）。由于没有 peer 依赖，不会触发版本兼容拒绝；若未来 API 变更，该行会在 `plugin_manager list_plugins` 中报 `failed`，工具随之消失。
+
+## 发布状态
+
+| 渠道 | 是否可用 |
+|---|---|
+| GitHub 仓库 | ✅ https://github.com/ccclucky/dsh-plugin-session-rename |
+| `dsh plugin add git+https://…` | ✅ 已端到端实测 |
+| npm registry | ❌ **未发布** |
+| `dsh plugin add dsh-plugin-session-rename`（裸包名） | ❌ 包名不在 npm 上时必然失败 |
+
+发布到 npm 后裸包名才可用。那需要 npm 账号并显式执行 `npm publish`，目前尚未进行；在本表更新之前，裸包名写法一律视为不可用。
 
 ## 许可
 
