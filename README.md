@@ -141,16 +141,16 @@ exact-version exemption (`dsh plugin allow-version`) rather than editing the ran
 
 | Channel | Available |
 |---|---|
+| npm registry | ✅ [dsh-plugin-session-rename@1.0.0](https://www.npmjs.com/package/dsh-plugin-session-rename) — published with provenance |
+| `dsh plugin add dsh-plugin-session-rename` | ✅ verified: installs in seconds, and the installer appends the bundle to `dsh.profile.bundles` |
 | GitHub repository | ✅ https://github.com/ccclucky/dsh-plugin-session-rename |
 | GitHub topic `dsh-plugin` | ✅ added — the community hub (dsh-plugin.org) discovers repos by this topic |
-| `dsh plugin add git+https://…` | ✅ verified end to end |
-| npm registry | ⏳ prepared, **first publish pending** |
-| `dsh plugin add dsh-plugin-session-rename` | ❌ fails until the first npm publish lands |
+| `dsh plugin add git+https://…` | ✅ also works, for an unreleased commit |
 
-The npm release is prepared and reproducible: `.github/workflows/publish.yml`
-runs the tests, verifies the tarball, and publishes with provenance on a `v*`
-tag push, using the `NPM_TOKEN` repository secret. Until that run succeeds, use
-the git or local channel above.
+Releases are published by `.github/workflows/publish.yml` on a `v*` tag: it runs
+the tests, verifies the tarball, then publishes with provenance. The `NPM_TOKEN`
+secret must hold a **granular access token with "Bypass 2FA" enabled** — a token
+without that bypass authenticates fine and then fails the upload with a 403.
 
 ## License
 

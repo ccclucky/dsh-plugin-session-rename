@@ -133,14 +133,15 @@ node --test
 
 | 渠道 | 是否可用 |
 |---|---|
+| npm registry | ✅ [dsh-plugin-session-rename@1.0.0](https://www.npmjs.com/package/dsh-plugin-session-rename) —— 已带 provenance 发布 |
+| `dsh plugin add dsh-plugin-session-rename` | ✅ 已实测：数秒装好，安装器自动把 bundle 追加进 `dsh.profile.bundles` |
 | GitHub 仓库 | ✅ https://github.com/ccclucky/dsh-plugin-session-rename |
 | GitHub 话题 `dsh-plugin` | ✅ 已添加 —— 社区站 dsh-plugin.org 依此话题发现仓库 |
-| `dsh plugin add git+https://…` | ✅ 已端到端实测 |
-| npm registry | ⏳ 已备好，**首次发布待执行** |
-| `dsh plugin add dsh-plugin-session-rename` | ❌ 首次 npm 发布完成前不可用 |
+| `dsh plugin add git+https://…` | ✅ 同样可用，适合装未发布的提交 |
 
-npm 发布已备成可复现流程：`.github/workflows/publish.yml` 在推送 `v*` 标签时跑测试、校验 tarball、
-带 provenance 发布，使用仓库密钥 `NPM_TOKEN`。在该流程成功之前，请用上面的 git 或本地方式。
+发布由 `.github/workflows/publish.yml` 在推送 `v*` 标签时执行：跑测试、校验 tarball，再带 provenance 发布。
+仓库密钥 `NPM_TOKEN` 必须存放**勾选了「Bypass 2FA」的细粒度令牌**——不勾豁免的令牌能通过认证，
+但上传阶段会以 403 失败。
 
 ## 许可
 
