@@ -1,0 +1,8 @@
+# Normalize line endings: keep LF in the repository on every platform so the
+# files behave identically on Windows and in CI.
+* text=auto eol=lf
+
+# Binary assets, if any are added later.
+*.png binary
+*.jpg binary
+*.webp binary
